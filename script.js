@@ -62,12 +62,22 @@ const showLoadingAnimation = () => {
                 <div class="loading-bar"></div>
             </div>
         </div>
-        <span class="icon material-symbols-rounded">content_copy</span>
+        <span onclick="copyMessage(this)" class="icon material-symbols-rounded">content_copy</span>
     `;
     
     const incomingMessageDiv = createMessageElement(html, 'incoming', 'loading');
     chatlist.appendChild(incomingMessageDiv);
     generateAPIResponse(incomingMessageDiv);
+};
+
+const copyMessage = (copyIcon) => {
+    const messageText = copyIcon.parentElement.querySelector('.text').innerText; // استخدم innerText للحصول على النص
+    navigator.clipboard.writeText(messageText).then(() => {
+        copyIcon.innerText = "done";
+        setTimeout(() => copyIcon.innerText = "content_copy", 1000);
+    }).catch(err => {
+        console.error('Failed to copy: ', err);
+    });
 };
 
 const handleOutgoingChat = () => {
