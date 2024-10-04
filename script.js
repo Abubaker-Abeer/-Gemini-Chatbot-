@@ -11,7 +11,16 @@ const createMessageElement = (content, ...classes) => {
     div.innerHTML = content;
     return div;
 };
-
+const showTypingEffect=(text ,textElement)=>{
+    const words = text.split(' ');
+    let currentWordIndex =0;
+const typingInterval =setInterval(()=>{
+textElement.innerText+=(currentWordIndex ===0? '' : ' ')+words[currentWordIndex++]
+   if(currentWordIndex === words.length){
+    clearInterval(typingInterval)
+   }
+},75);
+}
 const generateAPIResponse = async (incomingMessageDiv) => {
     const textElement =incomingMessageDiv.querySelector('.text')
     try {
@@ -34,8 +43,7 @@ const generateAPIResponse = async (incomingMessageDiv) => {
 
         const data = await response.json();
         const apiResponse =data?.candidates[0].content.parts[0].text;
-        textElement.innerText=apiResponse;
-
+         showTypingEffect(apiResponse ,textElement)
     } catch (error) {
         console.error('Error occurred:', error);
     } finally{
