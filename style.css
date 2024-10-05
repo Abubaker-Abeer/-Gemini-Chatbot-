@@ -13,6 +13,14 @@
     --secondary-color:#383838;
     --secondary-hover-color:#444;
 }
+.light_mode{
+    --text-color:#222;
+    --subheading-color:#A0A0A0;
+    --placeholder-color:#6C6C6C;
+    --primary-color:#FFF;
+    --secondary-color:#E9EEF6;
+    --secondary-hover-color:#DBE1EA;
+}
 body{
    background: var(--primary-color);
 }
@@ -88,6 +96,7 @@ body{
   padding: 2rem 1rem 12rem; 
   max-height: 100vh;
   overflow-y: auto;  
+  scrollbar-color: #999 transparent;
 }
 .chat-list .message.incoming {
     margin-top: 1.5rem;  
@@ -136,7 +145,7 @@ body{
   color: var(--text-color);
   visibility: hidden;
 }
-.chat-list .message:not(.loading):hover .icon{
+.chat-list .message:not(.loading):hover .icon:not(.hide){
     visibility: visible;
 }
 .chat-list .message .icon:hover{
