@@ -2,9 +2,10 @@ const typingForm = document.querySelector('.typing-form');
 const chatlist = document.querySelector('.chat-list');
 const toggleThemeButton = document.querySelector('#toggle-theme-button');
 const deletechatButton = document.querySelector('#delete-chat-button');
-
+const suggestions =document.querySelectorAll(".suggestion-list .suggestion")
 
 let userMessage = null;
+let isResponseGenerating = false
 const YOUR_API_KEY = "AIzaSyBw1KZQppLd9O_dN9tWClBLTjyQ_DsMdZc";
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${YOUR_API_KEY}`;
 
@@ -33,6 +34,7 @@ const typingInterval =setInterval(()=>{
 textElement.innerText+=(currentWordIndex ===0? '' : ' ')+words[currentWordIndex++]
 incomingMessageDiv.querySelector('.icon').classList.add('hide');  
 if(currentWordIndex === words.length){
+    isResponseGenerating=false
     clearInterval(typingInterval)
     incomingMessageDiv.querySelector('.icon').classList.remove('hide');  
     localStorage.setItem("savedchats",chatlist.innerHTML)
@@ -65,6 +67,7 @@ const generateAPIResponse = async (incomingMessageDiv) => {
         const apiResponse =data?.candidates[0].content.parts[0].text.replace(/\*\*(.*?)\*\*/g, '$1');
          showTypingEffect(apiResponse ,textElement,incomingMessageDiv)
     } catch (error) {
+        isResponseGenerating=false
         console.error('Error occurred:', error);
     } finally{
         incomingMessageDiv.classList.remove('loading')
@@ -103,9 +106,9 @@ const copyMessage = (copyIcon) => {
 };
 
 const handleOutgoingChat = () => {
-    userMessage = typingForm.querySelector('.typing-input').value.trim();
-    if (!userMessage) return;
-
+    userMessage = typingForm.querySelector('.typing-input').value.trim() || userMessage;
+    if (!userMessage || isResponseGenerating) return;
+      isResponseGenerating=true
     const html = `
         <div class="message-content">
             <img src="images/user.jpg" alt="User Image" class="avatar">
@@ -121,6 +124,13 @@ const handleOutgoingChat = () => {
      document.body.classList.add('hide-header')
     setTimeout(showLoadingAnimation, 500);
 };
+
+suggestions.forEach(suggestions => {
+    suggestions.addEventListener("click", () => {
+        userMessage = suggestions.querySelector(".text").innerText;
+        handleOutgoingChat();
+    });
+});
 
 toggleThemeButton.addEventListener("click",() =>{
 const isLightMode=document.body.classList.toggle("light_mode")
