@@ -1,7 +1,7 @@
 const typingForm = document.querySelector('.typing-form');
 const chatlist = document.querySelector('.chat-list');
 const toggleThemeButton = document.querySelector('#toggle-theme-button');
-
+const deletechatButton = document.querySelector('#delete-chat-button');
 
 
 let userMessage = null;
@@ -14,6 +14,8 @@ const loadLocalstorgeData =() =>{
     document.body.classList.toggle("light_mode",isLightMode)
     toggleThemeButton.innerText=isLightMode ? "dark_mode" : "light_mode"
     chatlist.innerHTML=savedchats ||"";
+    document.body.classList.toggle('hide-header',savedchats)
+
     chatlist.scrollTo(0, chatlist.scrollHeight)
 
 }
@@ -116,7 +118,7 @@ const handleOutgoingChat = () => {
     chatlist.appendChild(outgoingMessageDiv);
     typingForm.reset();
     chatlist.scrollTo(0, chatlist.scrollHeight)
-
+     document.body.classList.add('hide-header')
     setTimeout(showLoadingAnimation, 500);
 };
 
@@ -125,6 +127,13 @@ const isLightMode=document.body.classList.toggle("light_mode")
 localStorage.setItem("themeColor",isLightMode ? "light_mode" : "dark_mode")
 toggleThemeButton.innerText=isLightMode ? "dark_mode" : "light_mode"
 });
+deletechatButton.addEventListener("click", () => {
+    if (confirm("Are you sure you want to delete all messages?")) {
+        localStorage.removeItem("savedchats");
+        loadLocalstorgeData();
+    }
+});
+
 typingForm.addEventListener("submit", (e) => {
     e.preventDefault();
     handleOutgoingChat();
