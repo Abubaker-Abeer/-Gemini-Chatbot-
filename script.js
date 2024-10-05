@@ -64,11 +64,14 @@ const generateAPIResponse = async (incomingMessageDiv) => {
         }
 
         const data = await response.json();
+        if(!response.ok) throw new Error(data.error.message)
         const apiResponse =data?.candidates[0].content.parts[0].text.replace(/\*\*(.*?)\*\*/g, '$1');
          showTypingEffect(apiResponse ,textElement,incomingMessageDiv)
     } catch (error) {
         isResponseGenerating=false
-        console.error('Error occurred:', error);
+        textElement.innerHTML=error.message
+        textElement.classList.add("error")
+
     } finally{
         incomingMessageDiv.classList.remove('loading')
     }
